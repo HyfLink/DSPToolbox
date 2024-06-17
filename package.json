@@ -1,8 +1,12 @@
 {
   "name": "dyson-sphere-program-toolbox",
-  "private": true,
   "version": "0.0.0",
+  "description": "Game toolbox for \"Dyson Sphere Program\"",
+  "author": "HYF <1151665922@qq.com>",
+  "repository": "https://github.com/HyfLink/DSPToolbox.git",
+  "license": "MIT OR Apache-2.0",
   "type": "module",
+  "private": true,
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
