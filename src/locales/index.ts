@@ -1,10 +1,17 @@
-import zh from "@/locales/zh.json";
-import en from "@/locales/en.json";
+import localeJsonZH from "@/locales/zh.json";
+import localeJsonEN from "@/locales/en.json";
 import { createI18n } from "vue-i18n";
 import { dateEnUS, dateZhCN, enUS, zhCN } from "naive-ui";
 
+/**
+ * Only supports Chinese (Simplified) and English.
+ */
 export type LocaleKey = "zh" | "en";
-export type LocaleScheme = typeof zh;
+
+/**
+ * Defines master scheme from `zh`.
+ */
+export type LocaleScheme = typeof localeJsonZH;
 
 const availableLocales: LocaleKey[] = ["zh", "en"];
 
@@ -13,7 +20,10 @@ export const vueI18n = createI18n<[LocaleScheme], LocaleKey>({
   locale: "zh",
   fallbackLocale: "zh",
   availableLocales,
-  messages: { zh, en },
+  messages: {
+    zh: localeJsonZH,
+    en: localeJsonEN,
+  },
 });
 
 /**
