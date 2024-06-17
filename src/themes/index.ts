@@ -7,21 +7,17 @@ export const darkThemeOverrides: GlobalThemeOverrides = {};
 /**
  * Returns _Pinia_ store that describes application theme preference.
  *
- * - `scheme`: `Ref<"light" | "dark">`
+ * - `theme`: Current theme scheme, "light" or "dark".
  *
- *    Current theme scheme, "light" or "dark".
+ * - `icon`: Icon of the theme (`<Icon :icon="icon" />`)
  *
- * - `theme`: `ComputedRef<GlobalTheme | null>`
+ * - `message`: Name of the theme.
  *
- *    Computed naive-ui theme.
+ * - `themeVariables`: Computed naive-ui theme.
  *
- * - `themeOverrides`: `ComputedRef<GlobalThemeOverrides>`
+ * - `themeOverrides`: Computed naive-ui theme overrides.
  *
- *    Computed naive-ui theme overrides.
- *
- * - `switch` `() => ("light | "dark")`
- *
- *    Toggles theme scheme and returns new theme scheme.
+ * - `switch`: Toggles theme scheme and returns new theme scheme.
  */
 export const useThemePreference = defineStore("theme-Preference", () => {
   const themePreferred = usePreferredColorScheme();

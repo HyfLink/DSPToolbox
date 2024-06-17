@@ -29,21 +29,17 @@ export const vueI18n = createI18n<[LocaleScheme], LocaleKey>({
 /**
  * Returns _Pinia_ store that describes application locale preference.
  *
- * - `locale`: `Ref<LocaleKey>`
+ * - `locale`:  Current locale key (only "zh" and "en" are supported).
  *
- *    Current locale key (only "zh" and "en" are supported).
+ * - `icon`: Icon of the locale (`<Icon :icon="icon" />`)
  *
- * - `uiLocale`: `ComputedRef<NLocale>`
+ * - `message`: Name of the locale.
  *
- *    Computed naive locale.
+ * - `uiLocale`:  Computed naive locale.
  *
- * - `uiDateLocale`: `ComputedRef<NDateLocale>`
+ * - `uiDateLocale` Computed naive date locale.
  *
- *    Computed naive date locale.
- *
- * - `toggle`
- *
- *    Toggles locale and returns new locale.
+ * - `toggle` Toggles locale and returns new locale.
  */
 export const useLocalePreference = defineStore("locale-preference", () => {
   function selectLocale(locales: readonly string[]): LocaleKey {
