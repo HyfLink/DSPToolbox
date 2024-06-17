@@ -1,10 +1,17 @@
-import zh from "@/locales/zh.json";
-import en from "@/locales/en.json";
+import localeJsonZH from "@/locales/zh.json";
+import localeJsonEN from "@/locales/en.json";
 import { createI18n } from "vue-i18n";
 import { dateEnUS, dateZhCN, enUS, zhCN } from "naive-ui";
 
+/**
+ * Only supports Chinese (Simplified) and English.
+ */
 export type LocaleKey = "zh" | "en";
-export type LocaleScheme = typeof zh;
+
+/**
+ * Defines master scheme from `zh`.
+ */
+export type LocaleScheme = typeof localeJsonZH;
 
 const availableLocales: LocaleKey[] = ["zh", "en"];
 
@@ -13,27 +20,26 @@ export const vueI18n = createI18n<[LocaleScheme], LocaleKey>({
   locale: "zh",
   fallbackLocale: "zh",
   availableLocales,
-  messages: { zh, en },
+  messages: {
+    zh: localeJsonZH,
+    en: localeJsonEN,
+  },
 });
 
 /**
  * Returns _Pinia_ store that describes application locale preference.
  *
- * - `locale`: `Ref<LocaleKey>`
+ * - `locale`:  Current locale key (only "zh" and "en" are supported).
  *
- *    Current locale key (only "zh" and "en" are supported).
+ * - `icon`: Icon of the locale (`<Icon :icon="icon" />`)
  *
- * - `uiLocale`: `ComputedRef<NLocale>`
+ * - `message`: Name of the locale.
  *
- *    Computed naive locale.
+ * - `uiLocale`:  Computed naive locale.
  *
- * - `uiDateLocale`: `ComputedRef<NDateLocale>`
+ * - `uiDateLocale` Computed naive date locale.
  *
- *    Computed naive date locale.
- *
- * - `toggle`
- *
- *    Toggles locale and returns new locale.
+ * - `toggle` Toggles locale and returns new locale.
  */
 export const useLocalePreference = defineStore("locale-preference", () => {
   function selectLocale(locales: readonly string[]): LocaleKey {
