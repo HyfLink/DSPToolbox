@@ -27,7 +27,7 @@
     },
 
     /* Types */
-    "types": ["naive-ui/volar", "unplugin-vue-router/client"]
+    "types": ["vite/client", "node", "naive-ui/volar", "unplugin-vue-router/client"]
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
   "references": [{ "path": "./tsconfig.node.json" }]
