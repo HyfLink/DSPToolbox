@@ -27,15 +27,17 @@ export const useThemePreference = defineStore("theme-Preference", () => {
   const themePreferred = usePreferredColorScheme();
   const theme: Ref<"dark" | "light"> = ref(themePreferred.value == "dark" ? "dark" : "light");
 
-  const uiTheme = computed(() => (theme.value == "dark" ? darkTheme : null));
-  const uiThemeOverrides = computed(() => (theme.value == "dark" ? darkThemeOverrides : lightThemeOverrides));
-
-  const themeToggle = useToggle(theme, {
+  const toggleTheme = useToggle(theme, {
     truthyValue: "light",
     falsyValue: "dark",
   });
 
-  const toggle = () => themeToggle;
-
-  return { theme, uiTheme, uiThemeOverrides, toggle };
+  return {
+    theme,
+    toggle: () => toggleTheme(),
+    icon: computed(() => (theme.value == "dark" ? "ic:twotone-dark-mode" : "ic:twotone-light-mode")),
+    message: computed(() => (theme.value == "dark" ? "应用程序.深色模式" : "应用程序.浅色模式")),
+    themeVariables: computed(() => (theme.value == "dark" ? darkTheme : null)),
+    themeOverrides: computed(() => (theme.value == "dark" ? darkThemeOverrides : lightThemeOverrides)),
+  };
 });

@@ -1,3 +1,8 @@
 {
-  "语言": "English"
+  "语言": "English",
+  "应用程序": {
+    "主题": "Theme Scheme",
+    "浅色模式": "Light Mode",
+    "深色模式": "Dark Mode"
+  }
 }

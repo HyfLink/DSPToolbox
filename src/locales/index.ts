@@ -3,9 +3,12 @@ import en from "@/locales/en.json";
 import { createI18n } from "vue-i18n";
 import { dateEnUS, dateZhCN, enUS, zhCN } from "naive-ui";
 
-const availableLocales: ("zh" | "en")[] = ["zh", "en"];
+export type LocaleKey = "zh" | "en";
+export type LocaleScheme = typeof zh;
 
-export const vueI18n = createI18n({
+const availableLocales: LocaleKey[] = ["zh", "en"];
+
+export const vueI18n = createI18n<[LocaleScheme], LocaleKey>({
   legacy: false,
   locale: "zh",
   fallbackLocale: "zh",
@@ -16,7 +19,7 @@ export const vueI18n = createI18n({
 /**
  * Returns _Pinia_ store that describes application locale preference.
  *
- * - `locale`: `Ref<"zh" | "en">`
+ * - `locale`: `Ref<LocaleKey>`
  *
  *    Current locale key (only "zh" and "en" are supported).
  *
@@ -33,7 +36,7 @@ export const vueI18n = createI18n({
  *    Toggles locale and returns new locale.
  */
 export const useLocalePreference = defineStore("locale-preference", () => {
-  function selectLocale(locales: readonly string[]) {
+  function selectLocale(locales: readonly string[]): LocaleKey {
     for (const locale of locales) {
       for (const availableLocale of availableLocales) {
         if (locale.indexOf(availableLocale) >= 0) {
@@ -47,14 +50,16 @@ export const useLocalePreference = defineStore("locale-preference", () => {
 
   const localePreferred = usePreferredLanguages();
   const locale = ref(selectLocale(localePreferred.value));
-
-  const uiLocale = computed(() => (locale.value == "zh" ? zhCN : enUS));
-  const uiDateLocale = computed(() => (locale.value == "zh" ? dateZhCN : dateEnUS));
-
   const localeCycleList = useCycleList(availableLocales);
+
   watch(localeCycleList.state, (newLocale) => (locale.value = newLocale));
 
-  const toggle = () => (vueI18n.global.locale.value = localeCycleList.next());
-
-  return { locale, uiLocale, uiDateLocale, toggle };
+  return {
+    locale,
+    toggle: () => (vueI18n.global.locale = localeCycleList.next()),
+    icon: computed(() => "mdi:language"),
+    message: computed(() => "语言"),
+    uiLocale: computed(() => (locale.value == "zh" ? zhCN : enUS)),
+    uiDateLocale: computed(() => (locale.value == "zh" ? dateZhCN : dateEnUS)),
+  };
 });
