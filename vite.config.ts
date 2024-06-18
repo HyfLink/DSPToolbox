@@ -1,12 +1,15 @@
+import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite";
 import vue from "@vitejs/plugin-vue";
-import AutoImport from "unplugin-auto-import/vite";
-import Icons from "unplugin-icons/vite";
+import { dirname, resolve } from "path";
+import AutoImportPlugin from "unplugin-auto-import/vite";
+import IconsPlugin from "unplugin-icons/vite";
 import { NaiveUiResolver } from "unplugin-vue-components/resolvers";
-import VueComponents from "unplugin-vue-components/vite";
-import VueMarkdown from "unplugin-vue-markdown/vite";
-import VueRouter from "unplugin-vue-router/vite";
+import VueComponentsPlugin from "unplugin-vue-components/vite";
+import VueMarkdownPlugin from "unplugin-vue-markdown/vite";
+import VueRouterPlugin from "unplugin-vue-router/vite";
 import { fileURLToPath } from "url";
 import { defineConfig } from "vite";
+import PACKAGE from "./package.json";
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
@@ -23,6 +26,9 @@ export default defineConfig(async () => ({
       ignored: ["**/src-tauri/**"],
     },
   },
+  define: {
+    "process.env.PACKAGE_REPOSITORY": JSON.stringify(PACKAGE.repository),
+  },
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("src", import.meta.url)),
@@ -30,7 +36,7 @@ export default defineConfig(async () => ({
   },
   plugins: [
     vue(),
-    AutoImport({
+    AutoImportPlugin({
       dts: "src/typings/auto-imports.d.ts",
       include: [
         /\.ts$/, // .ts
@@ -50,19 +56,22 @@ export default defineConfig(async () => ({
         },
       ],
     }),
-    VueComponents({
+    VueComponentsPlugin({
       dts: "src/typings/components.d.ts",
       dirs: "src/components",
       extensions: ["vue", "md"],
       resolvers: [NaiveUiResolver()],
     }),
-    VueRouter({
+    VueRouterPlugin({
       dts: "src/typings/typed-router.d.ts",
       extensions: [".vue", ".md"],
       routesFolder: "src/pages",
     }),
-    VueMarkdown({}),
-    Icons({
+    VueI18nPlugin({
+      include: resolve(dirname(fileURLToPath(import.meta.url)), "./src/locales/**.json"),
+    }),
+    VueMarkdownPlugin({}),
+    IconsPlugin({
       compiler: "vue3",
     }),
   ],

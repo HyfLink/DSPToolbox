@@ -1,7 +1,7 @@
 import localeJsonZH from "@/locales/zh.json";
 import localeJsonEN from "@/locales/en.json";
 import { createI18n } from "vue-i18n";
-import { dateEnUS, dateZhCN, enUS, zhCN } from "naive-ui";
+import { NDateLocale, NLocale, dateEnUS, dateZhCN, enUS, zhCN } from "naive-ui";
 
 /**
  * Only supports Chinese (Simplified) and English.
@@ -13,11 +13,12 @@ export type LocaleKey = "zh" | "en";
  */
 export type LocaleScheme = typeof localeJsonZH;
 
+const defaultLocale: LocaleKey = "zh";
 const availableLocales: LocaleKey[] = ["zh", "en"];
 
-export const vueI18n = createI18n<[LocaleScheme], LocaleKey>({
+export const vueI18n = createI18n({
   legacy: false,
-  locale: "zh",
+  locale: defaultLocale,
   fallbackLocale: "zh",
   availableLocales,
   messages: {
@@ -26,46 +27,35 @@ export const vueI18n = createI18n<[LocaleScheme], LocaleKey>({
   },
 });
 
+export type UseLocalePreferenceStore = {
+  // Current locale key (only "zh" and "en" are supported).
+  locale: Ref<LocaleKey>;
+  // Toggles locale and returns new locale.
+  toggle: () => LocaleKey;
+  // Computed icon of the locale.
+  icon: ComputedRef<string>;
+  // Computed name of the locale.
+  message: ComputedRef<string>;
+  // Computed naive locale.
+  uiLocale: ComputedRef<NLocale>;
+  // Computed naive date locale.
+  uiDateLocale: ComputedRef<NDateLocale>;
+};
+
 /**
  * Returns _Pinia_ store that describes application locale preference.
- *
- * - `locale`:  Current locale key (only "zh" and "en" are supported).
- *
- * - `icon`: Icon of the locale (`<Icon :icon="icon" />`)
- *
- * - `message`: Name of the locale.
- *
- * - `uiLocale`:  Computed naive locale.
- *
- * - `uiDateLocale` Computed naive date locale.
- *
- * - `toggle` Toggles locale and returns new locale.
  */
-export const useLocalePreference = defineStore("locale-preference", () => {
-  function selectLocale(locales: readonly string[]): LocaleKey {
-    for (const locale of locales) {
-      for (const availableLocale of availableLocales) {
-        if (locale.indexOf(availableLocale) >= 0) {
-          return availableLocale;
-        }
-      }
-    }
-
-    return availableLocales[0];
-  }
-
-  const localePreferred = usePreferredLanguages();
-  const locale = ref(selectLocale(localePreferred.value));
-  const localeCycleList = useCycleList(availableLocales);
-
-  watch(localeCycleList.state, (newLocale) => (locale.value = newLocale));
+export const useLocalePreference = defineStore<string, UseLocalePreferenceStore>("preference-locale", () => {
+  const cycleList = useCycleList<LocaleKey>(availableLocales, {
+    initialValue: defaultLocale,
+  });
 
   return {
-    locale,
-    toggle: () => (vueI18n.global.locale = localeCycleList.next()),
+    locale: cycleList.state,
+    toggle: () => (vueI18n.global.locale.value = cycleList.next()),
     icon: computed(() => "mdi:language"),
     message: computed(() => "语言"),
-    uiLocale: computed(() => (locale.value == "zh" ? zhCN : enUS)),
-    uiDateLocale: computed(() => (locale.value == "zh" ? dateZhCN : dateEnUS)),
+    uiLocale: computed(() => (cycleList.state.value === "zh" ? zhCN : enUS)),
+    uiDateLocale: computed(() => (cycleList.state.value === "zh" ? dateZhCN : dateEnUS)),
   };
 });

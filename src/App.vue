@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useThemePreference } from "@/themes";
 import { useLocalePreference } from "@/locales";
+import { useThemePreference } from "@/themes";
 
 const theme = useThemePreference();
 const locale = useLocalePreference();
@@ -14,8 +14,7 @@ const locale = useLocalePreference();
     :date-locale="locale.uiDateLocale"
   >
     <n-card>
-      <c-switch-theme />
-      <c-switch-locale />
+      <c-navbar-button-group />
     </n-card>
   </n-config-provider>
 </template>
